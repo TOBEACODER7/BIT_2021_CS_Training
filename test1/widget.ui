@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Widget</class>
+ <widget class="QWidget" name="Widget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Widget</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#widget{
+	background-image: url(:/image/moon.png);
+}
+
+QToolButton{
+	border-style:none;
+}
+</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>501</width>
+     <height>501</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>501</width>
+      <height>501</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="2">
+      <widget class="QToolButton" name="toolButton_3">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+	background-image: url(:/image/modify.png);
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>编辑</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/modify.png</normaloff>:/image/modify.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <widget class="QToolButton" name="toolButton_12">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/star (2).png</normaloff>:/image/star (2).png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QToolButton" name="toolButton_11">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/moon.png</normaloff>:/image/moon.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QToolButton" name="toolButton_13">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/add_friends.png</normaloff>:/image/add_friends.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QToolButton" name="toolButton_7">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/collection.png</normaloff>:/image/collection.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QToolButton" name="toolButton_6">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>开启窗口</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/add.png</normaloff>:/image/add.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="toolButton_8">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>关闭窗口</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/subtract.png</normaloff>:/image/subtract.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QToolButton" name="toolButton_9">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/time_two.png</normaloff>:/image/time_two.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QToolButton" name="toolButton_2">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/more.png</normaloff>:/image/more.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QToolButton" name="toolButton_4">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>更换背景</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/picture.png</normaloff>:/image/picture.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QToolButton" name="toolButton_10">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/stopwatch.png</normaloff>:/image/stopwatch.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QToolButton" name="toolButton_5">
+       <property name="styleSheet">
+        <string notr="true">QToolButton{
+
+	color:rgb(0,255,255);
+}</string>
+       </property>
+       <property name="text">
+        <string>应用</string>
+       </property>
+       <property name="icon">
+        <iconset resource="image.qrc">
+         <normaloff>:/image/rotation.png</normaloff>:/image/rotation.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
+ <connections/>
+</ui>

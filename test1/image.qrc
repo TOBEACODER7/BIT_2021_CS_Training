@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/modify.png</file>
+        <file>image/more.png</file>
+        <file>image/picture.png</file>
+        <file>image/rotation.png</file>
+        <file>image/add.png</file>
+        <file>image/add_friends.png</file>
+        <file>image/collection.png</file>
+        <file>image/star.png</file>
+        <file>image/stopwatch.png</file>
+        <file>image/subtract.png</file>
+        <file>image/time_two.png</file>
+        <file>image/moon.png</file>
+        <file>image/ss.png</file>
+    </qresource>
+</RCC>
