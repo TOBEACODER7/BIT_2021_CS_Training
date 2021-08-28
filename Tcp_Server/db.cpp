@@ -26,10 +26,10 @@ int db::getNum(){
 
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("？？？");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("？？？");
+    db.setPassword("admin");
     if(!db.open())
     {
          qDebug()<<"数据库在函数getNum打开失败!原因是:"<<db.lastError().text();
@@ -50,22 +50,22 @@ bool db::insertSql(user_info &user){
 
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("？？？");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("？？？");
+    db.setPassword("admin");
     if(!db.open())
     {
          qDebug()<<"数据库在函数 insertSql 打开失败!原因是:"<<db.lastError().text();
     }
 
 
-    QString sql1=QString("INSERT INTO user_info VALUES('1%','2%','3%','4%');")
+    QString sql1=QString("INSERT INTO user_info VALUES('%1','%2','%3','%4');")
             .arg(user.getUno())
             .arg(user.getName())
             .arg(user.getPhone())
             .arg(user.getemail());
-    QString sql2=QString("INSERT INTO login_info VALUES('1%','2%','3%');")
+    QString sql2=QString("INSERT INTO login_info VALUES('%1','%2','%3');")
             .arg(user.getUno())
             .arg(user.getUsername())
             .arg(user.getPassword());
@@ -91,10 +91,10 @@ bool db::selectSql(QString username)
 
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("？？？");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("？？？");
+    db.setPassword("admin");
 
 
     //打开数据库
@@ -113,8 +113,8 @@ bool db::selectSql(QString username)
     if(query.next())
     {
         //匹配成功
-        qDebug()<<query.value(1).toString();
-        if(username==query.value(1).toString()){
+        qDebug()<<query.value(0).toString();
+        if(username==query.value(0).toString()){
             db.close();
             return true;
         }
@@ -129,10 +129,10 @@ bool db::loginJudge(QString username, QString password)
 
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("???");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("???");
+    db.setPassword("admin");
 
 
     if(!db.open())
@@ -149,8 +149,8 @@ bool db::loginJudge(QString username, QString password)
     //查询结束
     if(query.next())
     {
-        qDebug()<<query.value(2).toString();
-        if(password==query.value(2).toString()){
+        qDebug()<<query.value(1).toString();
+        if(password==query.value(1).toString()){
             //密码正确
             db.close();
             return true;
