@@ -13,7 +13,7 @@ Client::~Client(){}
 void Client::slot_Read()
 {
     QString str = Socket->readAll();
-    str = this->address.toString()+":"+str;
-    qDebug()<<str;
+    str = str + "From" + this->address.toString();
+    //qDebug()<<str;
     parent->recvmsg(str);
 }

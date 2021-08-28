@@ -5,6 +5,8 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include "client.h"
+#include "user_info.h"
+#include "db.h"
 
 namespace Ui {
 class Tcp_Server;
@@ -23,7 +25,8 @@ public:
     Client *Clients[10];//用于存放客户端指针的数组
     int connect_sum = 0;//记录目前已经连接的客户端总数
     void recvmsg(QString str);
-    void menu_update();
+    void client_menu_update();
+    void server_menu_update();
     void Timer();
 private slots:
     void slot_newconnect();
@@ -39,6 +42,8 @@ private:
     int check_num();//检查目前服务器中剩余的空位，若有空位则返回空位坐标，否则返回0
     QTcpServer *TCP_Server;
     QTcpSocket *TCP_connectSocket;
+    user_info *user;
+    db *DataBase;
 };
 
 #endif // TCP_SERVER_H

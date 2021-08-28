@@ -29,12 +29,14 @@ SOURCES += \
         main.cpp \
         tcp_server.cpp \
     client.cpp \
-    datadb.cpp
+    db.cpp \
+    user_info.cpp
 
 HEADERS += \
         tcp_server.h \
     client.h \
-    datadb.h
+    db.h \
+    user_info.h
 
 FORMS += \
         tcp_server.ui
