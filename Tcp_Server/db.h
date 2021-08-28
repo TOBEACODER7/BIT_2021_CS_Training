@@ -22,5 +22,3 @@ public:
 };
 
 #endif // DB_H
-
-
