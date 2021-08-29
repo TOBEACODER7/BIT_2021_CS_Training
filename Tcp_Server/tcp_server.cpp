@@ -4,6 +4,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include "user_info.h"
+#include <QMap>
 #include "db.h"
 
 Tcp_Server::Tcp_Server(QWidget *parent) :
@@ -15,7 +16,7 @@ Tcp_Server::Tcp_Server(QWidget *parent) :
     //初始化
     TCP_Server = new QTcpServer();
     TCP_connectSocket = nullptr;
-    memset(num,0,sizeof (num));
+    //memset(num,0,sizeof (num));
 
     DataBase = new db();
 
@@ -44,6 +45,7 @@ Tcp_Server::~Tcp_Server()
 }
 
 //服务器坑位检测函数，用以检测服务器目前是否还有可用的坑位
+/*
 int Tcp_Server::check_num()
 {
     for(int i=1;i<=9;i++)
@@ -55,12 +57,14 @@ int Tcp_Server::check_num()
     }
     return 0;
 }
+*/
 
 void Tcp_Server::slot_newconnect()
 {
     TCP_connectSocket = TCP_Server->nextPendingConnection();
     qDebug()<<"有新的客户端接入";
-    int location = this->check_num();
+    location++;
+    /*
     if(location == 0)
     {
         slot_sendmsg("无法连接已满的服务器",TCP_connectSocket);
@@ -69,10 +73,12 @@ void Tcp_Server::slot_newconnect()
 
         return;
     }
-    num[location] = 1;
+    */
+    //num[location] = 1;
     connect_sum++;
     Client *client = new Client(this,TCP_connectSocket,location);
-    this->Clients[location] = client;
+    //this->Clients[location] = client;
+    this->map1.insert(location,*client);
 
     //服务器列表更新
     this->server_menu_update();
@@ -90,7 +96,8 @@ void Tcp_Server::slot_newconnect()
     this->client_menu_update();
 
     //当客户端有通信发出时
-    connect(Clients[location]->Socket,SIGNAL(readyRead()),Clients[location],SLOT(slot_Read()));
+    //connect(Clients[location]->Socket,SIGNAL(readyRead()),Clients[location],SLOT(slot_Read()));
+    connect(map1[location].Socket,SIGNAL(readyRead()),&map1[location],SLOT(slot_Read()));
 
     //当客户端断开连接时，让出服务器的位置（用心跳包机制代替77）
     //connect(Clients[location]->Socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(slot_disconnect(location)));
@@ -98,11 +105,11 @@ void Tcp_Server::slot_newconnect()
 }
 
 //服务器发送函数，用于反馈异常信息or进行客户端之间通信时作为转发函数
-void Tcp_Server::slot_sendmsg(QString str,QTcpSocket *Socket)
+void Tcp_Server::slot_sendmsg(QString str,int send_id,int recv_id)
 {
-    std::string str1 = str.toStdString();
+    std::string str1 = send_id+":"+str.toStdString();
     const char *data = str1.c_str();
-    int num1 = Socket->write(data);
+    map1.value(recv_id).Socket->write(data);
     //qDebug()<< "sendhanshu";
 
 
@@ -175,11 +182,13 @@ void Tcp_Server::recvmsg(QString str)
     else if(str[0] == 'M')
     {
         int idx2 = str.indexOf("/");
+        int idx3 = str.indexOf("|");
         QString msg;
-        int recv_user = str.mid(12,idx2-12).toInt();
+        int send_user = str.mid(12,idx2-12).toInt();
+        int recv_user = str.mid(idx2+10,idx3).toInt();
         msg = str.mid(idx2+9,-1);
         //qDebug()<<"识别到Message";
-        slot_sendmsg(msg,Clients[recv_user]->Socket);
+        slot_sendmsg(msg,map1[send_user].Socket,map1[recv_user].Socket);
         qDebug()<<msg;
     }
     //qDebug()<<str[0];
@@ -191,8 +200,10 @@ void Tcp_Server::slot_disconnect(int location)
 {
     QString a = "error!!";
     //qDebug()<<a;
-    this->Clients[location] = nullptr;
-    this->num[location] = 0;
+    map1.remove(location);
+
+    //this->Clients[location] = nullptr;
+    //this->num[location] = 0;
     this->connect_sum--;
     this->client_menu_update();
     this->server_menu_update();
@@ -202,6 +213,13 @@ void Tcp_Server::slot_disconnect(int location)
 //刷新更新目前在线的客户端数目
 void Tcp_Server::client_menu_update()
 {
+    foreach (Client user,map1.values())
+    {
+        slot_sendmsg("在线用户location:"+QString::number(user.location,10),user.Socket);
+        slot_sendmsg("ip_address:"+user.Socket->peerAddress().toString(),user.Socket);
+
+    }
+    /*
     for(int j=1;j<=9;j++)
     {
         if(num[j]!=0)
@@ -217,6 +235,7 @@ void Tcp_Server::client_menu_update()
             }
         }
     }
+    */
 
 }
 
@@ -227,6 +246,11 @@ void Tcp_Server::server_menu_update()
     if(connect_sum!=0)
     {
         ui->textBrowser->append("在线ip列表:");
+        foreach(Client user,map1.values())
+        {
+            ui->textBrowser->append("#"+user.Socket->peerAddress().toString());
+        }
+        /*
         for(int i=1;i<=9;i++)
         {
             if(num[i]!=0)
@@ -234,6 +258,7 @@ void Tcp_Server::server_menu_update()
                 ui->textBrowser->append("#"+Clients[i]->Socket->peerAddress().toString());
             }
         }
+        */
     }
 
 
@@ -242,6 +267,15 @@ void Tcp_Server::server_menu_update()
 //服务器更新清理函数，用于更新设备连接状态，清理释放过期的SOCKET
 void Tcp_Server::update_Socket()
 {
+    foreach(Client user,map1.values())
+    {
+        bool flag = WakeHand(user.Socket);
+        if(!flag)
+        {
+            slot_disconnect(user.location);
+        }
+    }
+    /*
     for(int i=1;i<=9;i++)
     {
         if(num[i]!=0)
@@ -253,6 +287,7 @@ void Tcp_Server::update_Socket()
             }
         }
     }
+    */
 }
 
 //服务器挥手函数，用以给客户端发送消息检测此客户端是否和服务器正常通信
