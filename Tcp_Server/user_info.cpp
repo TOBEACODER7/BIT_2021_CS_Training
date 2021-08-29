@@ -79,4 +79,3 @@ QString user_info::getPhone(){
 QString user_info::getemail(){
     return  email;
 }
-
