@@ -19,6 +19,12 @@ public:
     bool loginJudge(QString username,QString password);
     //获取记录个数
     int  getNum();
+    //只要一注册，就添加一个表，需要提供用户名 如（王岩）表示王岩注册为用户，true表示注册成功
+    bool login(QString);
+    //添加好友，需要给加好友的人和被加好友的人，如（王岩，王储）表示王岩添加王储为好友，true表示添加成功
+    bool addFriend(QString,QString);
+    //查找好友是否存在 如（王岩，王储）表示查找王储是否是王岩的好友，true表示是
+    bool selectFriend(QString,QString);
 };
 
 #endif // DB_H
