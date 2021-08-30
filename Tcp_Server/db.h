@@ -25,6 +25,10 @@ public:
     bool addFriend(QString,QString);
     //查找好友是否存在 如（王岩，王储）表示查找王储是否是王岩的好友，true表示是
     bool selectFriend(QString,QString);
+    //通过username改变登录状态
+    bool changeState (QString,int);
+    //通过uno查找登录状态
+    int  selectState(int);
 };
 
 #endif // DB_H
