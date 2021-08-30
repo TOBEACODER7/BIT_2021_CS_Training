@@ -136,38 +136,44 @@ bool db::selectFriend(QString user, QString friends)
 
 
 bool db::insertSql(user_info &user){
-
-
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("user_info");
+    db.setDatabaseName("qtsql");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("admin");
+    db.setPassword("123456");
     if(!db.open())
     {
          qDebug()<<"数据库在函数 insertSql 打开失败!原因是:"<<db.lastError().text();
     }
 
 
-    QString sql1=QString("INSERT INTO user_info VALUES('%1','%2','%3','%4');")
+    QString sql1=QString("INSERT INTO user_info VALUES(%1,'%2','%3','%4');")
             .arg(user.getUno())
             .arg(user.getName())
             .arg(user.getPhone())
             .arg(user.getemail());
-    QString sql2=QString("INSERT INTO login_info VALUES('%1','%2','%3');")
+    QString sql2=QString("INSERT INTO login_info VALUES(%1,'%2','%3');")
             .arg(user.getUno())
             .arg(user.getUsername())
             .arg(user.getPassword());
+    QString sql3=QString("INSERT INTO online_info VALUES('%1','%2',0);")
+            .arg(user.getUno())
+            .arg(user.getUsername());
 
     QSqlQuery query(db);
     if(!query.exec(sql1)){
-        qDebug()<<"插入失败!原因是:"<< query.lastError().text();
+        qDebug()<<"user_info插入失败!原因是:"<< query.lastError().text();
         db.close();
         return false;
     }
     if(!query.exec(sql2)){
-        qDebug()<<"插入失败!原因是:"<< query.lastError().text();
+        qDebug()<<"login_info插入失败!原因是:"<< query.lastError().text();
+        db.close();
+        return false;
+    }
+    if(!query.exec(sql3)){
+        qDebug()<<"online_info插入失败!原因是:"<< query.lastError().text();
         db.close();
         return false;
     }
@@ -249,4 +255,55 @@ bool db::loginJudge(QString username, QString password)
     //密码错误
     db.close();
     return false;
+}
+
+bool db::changeState(QString username,int state){
+    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("127.0.0.1");
+    db.setDatabaseName("qtsql");
+    db.setPort(3306);
+    db.setUserName("root");
+    db.setPassword("123456");
+    //打开数据库
+    if(!db.open())
+    {
+         qDebug()<<"数据库在函数changeState中打开失败!原因是:"<<db.lastError().text();
+    }
+    QString sql = QString("UPDATE online_info SET state=%1 WHERE username='%2';").arg(state).arg(username);
+    QSqlQuery query(db);
+    query.prepare(sql);
+    if(!query.exec()){
+        qDebug()<<"改变状态失败！原因是:"<< query.lastError().text();
+        db.close();
+        return false;
+    }
+    db.close();
+    return true;
+}
+int db::selectState(int uno)
+{
+    int state;
+    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("127.0.0.1");
+    db.setDatabaseName("qtsql");
+    db.setPort(3306);
+    db.setUserName("root");
+    db.setPassword("123456");
+    //打开数据库
+    if(!db.open())
+    {
+         qDebug()<<"数据库在函数selectState中打开失败!原因是:"<<db.lastError().text();
+    }
+    QString sql = QString("select state from online_info where uno=%1;").arg(uno);
+    QSqlQuery query(db);
+    query.prepare(sql);
+    if(!query.exec()){
+        qDebug()<<"查找状态失败！原因是:"<< query.lastError().text();
+        db.close();
+        return -1;
+    }
+    query.next();
+    state=query.value(0).toInt();
+    db.close();
+    return state;
 }
