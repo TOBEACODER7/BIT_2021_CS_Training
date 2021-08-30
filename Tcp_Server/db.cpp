@@ -10,6 +10,7 @@
 #include "db.h"
 
 
+
 db::db()
 {
    qDebug()<<"数据库对象建立!";
@@ -20,7 +21,32 @@ db::~db()
    qDebug()<<"数据库对象释放!";
 }
 
+QString db::getUsernameByUno(int uno)
+{
+    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("127.0.0.1");
+    db.setDatabaseName("qtsql");
+    db.setPort(3306);
+    db.setUserName("root");
+    db.setPassword("123456");
+    if(!db.open())
+    {
+         qDebug()<<"数据库在函数getUsernameByUno打开失败!原因是:"<<db.lastError().text();
+    }
 
+    QString sql=QString("SELECT username FROM login_info where uno='%1';").arg(uno);
+    QSqlQuery query(db);
+    if(!query.exec(sql)){
+        qDebug()<<"通过uno查询username失败！原因是:"<< query.lastError().text();
+        db.close();
+        return "unkown";
+    }
+    query.next();
+    QString username=query.value(0).toString();
+    qDebug()<<uno<<"对应的username是:"<<username;
+    db.close();
+    return username;
+}
 
 int db::getNum(){
 
