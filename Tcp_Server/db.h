@@ -29,6 +29,8 @@ public:
     bool changeState (QString,int);
     //通过uno查找登录状态
     int  selectState(int);
+     //通过uno获取username
+    QString getUsernameByUno(int);
 };
 
 #endif // DB_H
