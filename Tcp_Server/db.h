@@ -57,6 +57,8 @@ public:
     bool clearState();
     //查看uno是否已经被使用
     bool usedUno(int);
+    //删除好友
+    bool deleteFriend(QString,QString);
 };
 
 #endif // DB_H
