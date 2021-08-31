@@ -29,8 +29,17 @@ public:
     bool changeState (QString,int);
     //通过uno查找登录状态
     int  selectState(int);
-     //通过uno获取username
     QString getUsernameByUno(int);
+    //通过username获取uno
+    int getUnoByUsername(QString);
+    //通过uno获取password
+    QString getPasswordByUno(int);
+    //通过uno获取name
+    QString getNameByUno(int);
+    //通过uno获取phone
+    QString getPhoneByUno(int);
+    //通过uno获取email
+    QString getEmailByUno(int);
 };
 
 #endif // DB_H
