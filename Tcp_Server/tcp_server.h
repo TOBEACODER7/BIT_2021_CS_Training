@@ -26,8 +26,9 @@ public:
     //Client *Clients[10];//用于存放客户端指针的数组
     QMap<int,Client> map1;
     int location = 0;
+    Client *client[100];
     int connect_sum = 0;//记录目前已经连接的客户端总数
-    void recvmsg(QString str);
+    void recvmsg(QString str,int recv_id);
     void client_menu_update();
     void server_menu_update();
     void Timer();

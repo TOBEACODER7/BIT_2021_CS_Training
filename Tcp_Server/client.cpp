@@ -19,10 +19,16 @@ Client::Client()
 Client::~Client(){}
 void Client::slot_Read()
 {
-    QString str = Socket->readAll();
-    str = str + "From" + this->address.toString();
-    //qDebug()<<str;
-    parent->recvmsg(str);
+    if(Socket!=nullptr)
+    {
+        QString str = Socket->readAll();
+        str = str + "From" + this->address.toString();
+        //int recv_id = this->parent->map1.key(*this);
+        int recv_id = this->location;
+        //qDebug()<<str;
+        parent->recvmsg(str,recv_id);
+    }
+
 }
 Client::Client(const Client &x)
 {
@@ -39,3 +45,16 @@ Client& Client::operator=(const Client &x)
     this->parent=x.parent;
 
 }
+/*
+bool Client::operator==(Client x)
+{
+    if(this->Socket==x.Socket && this->parent==x.parent && this->address==x.address && this->location==x.location)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+*/

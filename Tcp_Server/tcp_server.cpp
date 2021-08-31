@@ -16,12 +16,13 @@ Tcp_Server::Tcp_Server(QWidget *parent) :
     //初始化
     TCP_Server = new QTcpServer();
     TCP_connectSocket = nullptr;
-    //memset(num,0,sizeof (num));
 
     DataBase = new db();
-
-    //用于服务器主动通过输入框发送给客户端信息(正式项目不需要)
-    //connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(slot_sendmsg()));
+    for(int i=1;i <= DataBase->getNum(); i++)
+    {
+        QString name = DataBase->getUsernameByUno(i);
+        DataBase->changeState(name,0);
+    }
 
     //调用listen函数监听同时绑定IP和端口号
     if(TCP_Server->listen(QHostAddress::Any,6666))
@@ -64,68 +65,58 @@ void Tcp_Server::slot_newconnect()
     TCP_connectSocket = TCP_Server->nextPendingConnection();
     qDebug()<<"有新的客户端接入";
     location++;
-    /*
-    if(location == 0)
-    {
-        slot_sendmsg("无法连接已满的服务器",TCP_connectSocket);
-        TCP_connectSocket->disconnectFromHost();
-        qDebug()<<"服务器连接已满，并已阻止连接";
 
-        return;
-    }
-    */
-    //num[location] = 1;
     connect_sum++;
-    Client *client = new Client(this,TCP_connectSocket,location);
-    //this->Clients[location] = client;
-    this->map1.insert(location,*client);
+
+
+    client[location] = new Client(this,TCP_connectSocket,location);
+
+    this->map1.insert(location,*client[location]);
 
     //服务器列表更新
     this->server_menu_update();
-    /*ui->textBrowser->append("已连接数："+QString::number(connect_sum));
-    ui->textBrowser->append("在线ip列表:");
-    for(int i=1;i<=9;i++)
-    {
-        if(num[i]!=0)
-        {
-            ui->textBrowser->append("#"+Clients[i]->Socket->peerAddress().toString());
-        }
-    }*/
+
 
     //客户端列表更新
     this->client_menu_update();
 
     //当客户端有通信发出时
-    //connect(Clients[location]->Socket,SIGNAL(readyRead()),Clients[location],SLOT(slot_Read()));
     connect(map1[location].Socket,SIGNAL(readyRead()),&map1[location],SLOT(slot_Read()));
-
-    //当客户端断开连接时，让出服务器的位置（用心跳包机制代替77）
-    //connect(Clients[location]->Socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(slot_disconnect(location)));
 
 }
 
 //服务器发送函数，用于反馈异常信息or进行客户端之间通信时作为转发函数
 void Tcp_Server::slot_sendmsg(QString str,int send_id,int recv_id)
 {
-    std::string str1 = send_id+":"+str.toStdString();
-    const char *data = str1.c_str();
-    map1.value(recv_id).Socket->write(data);
-    //qDebug()<< "sendhanshu";
+    if(send_id == 0)
+    {
+        std::string str1 = str.toStdString();
+        const char *data = str1.c_str();
+        map1.value(recv_id).Socket->write(data);
+    }
+    else
+    {
+        std::string str1 = send_id+":"+str.toStdString();
+        const char *data = str1.c_str();
+        map1.value(recv_id).Socket->write(data);
+        //qDebug()<< "sendhanshu";
+    }
 
 
 }
 
 //服务器信息接收函数，用于接收来自客户端的各种信息
-void Tcp_Server::recvmsg(QString str)
+void Tcp_Server::recvmsg(QString str,int recv_id)
 {
 
     //格式解析
     if(str[0] == 'L')
     {
-        int idx2 = str.indexOf("/");
+        int idx2 = str.indexOf("/password");
+        int idx3 = str.indexOf("From");
         QString msg;
         QString user_name = str.mid(11,idx2-11);
-        QString user_pwd = str.mid(idx2+10,-1);
+        QString user_pwd = str.mid(idx2+10,idx3-idx2-10);
 
         if((DataBase->selectSql(user_name)))
         {
@@ -133,8 +124,19 @@ void Tcp_Server::recvmsg(QString str)
 
             if(DataBase->loginJudge(user_name,user_pwd))
             {
-                //登录成功
-                msg = "L#1";
+                if(DataBase->selectState(user_name)==0)
+                {
+                    //登录成功
+                    msg = "L#1";
+                    DataBase->changeState(user_name,this->location);
+
+                }
+                else
+                {
+                    //该用户已在其他客户端登录
+                    msg = "L#2";
+                }
+
             }
             else
             {
@@ -145,26 +147,65 @@ void Tcp_Server::recvmsg(QString str)
         else
         {
             //用户名不存在，无法登录
-            msg = "L#3";
+            msg = "U#1";
         }
         qDebug()<< msg;
+        slot_sendmsg(msg,0,recv_id);
+
+
+
+
+        //服务器列表更新
+        this->server_menu_update();
+
+
+        //客户端列表更新
+        this->client_menu_update();
+
+
+
+
+
     }
     else if(str[0] == 'R')
     {
 
-        int idx2 = str.indexOf("/");
+        int idx2 = str.indexOf("/email");
+        int idx3 = str.indexOf("/username");
+        int idx4 = str.indexOf("/password");
+        int idx5 = str.indexOf("From");
         QString msg;
-        QString user_name = str.mid(11,idx2-11);
-        QString user_pwd = str.mid(idx2+10,-1);
+        QString phone = str.mid(8,11);
+        QString email = str.mid(26,idx3-26);
+        QString user_name = str.mid(idx3+10,idx4-idx3-10);
+        QString user_pwd = str.mid(idx4+10,idx5-idx4-10);
+
+        qDebug()<<"--------------------------------------------------";
+        qDebug()<<phone;
+        qDebug()<<email;
+        qDebug()<<user_name;
+        qDebug()<<user_pwd;
+        qDebug()<<"--------------------------------------------------";
 
         if(!DataBase->selectSql(user_name))
         {
 
+
             user = new user_info(DataBase->getNum()+1,user_name,user_pwd);
+            qDebug()<<DataBase->getNum();
             if(DataBase->insertSql(*user))
             {
                 //注册成功
                 msg = "R#1";
+                if(DataBase->Friend_table(user_name))
+                {
+                    qDebug()<<user_name<<"好友表注册成功";
+                }
+                else
+                {
+                    qDebug()<<user_name<<"好友表注册失败";
+                }
+
             }
             else
             {
@@ -175,22 +216,118 @@ void Tcp_Server::recvmsg(QString str)
         else
         {
             //用户名已被使用
-            msg = "R#3";
+            msg = "U#0";
         }
+
         qDebug()<<msg;
+
+        slot_sendmsg(msg,0,recv_id);
     }
     else if(str[0] == 'M')
     {
         int idx2 = str.indexOf("/");
         int idx3 = str.indexOf("|");
+        int idx4 = str.indexOf("From");
         QString msg;
-        int send_user = str.mid(12,idx2-12).toInt();
-        int recv_user = str.mid(idx2+10,idx3).toInt();
-        msg = str.mid(idx2+9,-1);
-        //qDebug()<<"识别到Message";
-        slot_sendmsg(msg,map1[send_user].Socket,map1[recv_user].Socket);
+        QString send_name = str.mid(12,idx2-12);
+        QString recv_name = str.mid(idx2+10,idx3-idx2-10);
+        int send_location = DataBase->selectState(msg);
+        int recv_location = DataBase->selectState(msg);
+        if(DataBase->selectFriend(send_name,recv_name))
+        {
+            //两个人是好友，可以发送信息
+
+
+            if(recv_location == 0)
+            {
+                //该用户离线
+                msg = "M#1";
+                slot_sendmsg(msg,0,send_location);
+            }
+            else
+            {
+                msg = "M#0"+send_name+":"+str.mid(idx3+9,idx4-idx3-9);
+                slot_sendmsg(msg,send_location,recv_location);
+            }
+
+        }
+        else
+        {
+            //该用户不是你的好友
+            msg = "M#2";
+            slot_sendmsg(msg,0,send_location);
+        }
+
+
+
         qDebug()<<msg;
+
+
     }
+    else if(str[0] == 'U')
+    {
+        int idx1 = str.indexOf("#");
+        int idx2 = str.indexOf("From");
+        QString user_name = str.mid(idx1+1,idx2);
+        qDebug()<<user_name;
+        QString msg;
+        if(DataBase->selectSql(user_name))
+        {
+            msg = "U#1";//用户名存在
+        }
+        else
+        {
+            msg = "U#0";//用户名不存在
+        }
+        slot_sendmsg(msg,0,recv_id);
+    }
+
+    else if(str[0] == 'F')
+    {
+        int idx1 = str.indexOf("/");
+        int idx2 = str.indexOf("From");
+        QString My_name = str.mid(8,idx1-8);
+        QString Friend_name = str.mid(idx1+11,idx2-idx1-11);
+        qDebug()<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+        qDebug()<<My_name;
+        qDebug()<<Friend_name;
+
+        QString msg;
+        if(DataBase->selectSql(Friend_name))
+        {
+            //查找的用户存在
+            if(DataBase->selectFriend(My_name,Friend_name))
+                    {
+                        //两个人是好友
+                        msg = "F#0";
+                    }
+                    else
+                    {
+                        //彼此加为好友（在彼此的好友表中添加姓名）
+                        if(DataBase->addFriend(My_name,Friend_name) && DataBase->addFriend(Friend_name,My_name))
+                        {
+                            //加好友成功
+                            msg = "F#1";
+
+                        }
+                        else
+                        {
+                            //系统错误，加好友失败
+                            msg = "F#2";
+                        }
+                    }
+        }
+        else
+        {
+            //查找的用户不存在
+            msg = "F#3";
+        }
+
+        slot_sendmsg(msg,0,DataBase->selectState(My_name));
+        qDebug()<<"##########"<<msg;
+
+    }
+
     //qDebug()<<str[0];
     ui->textBrowser->append(str);
 }
@@ -198,12 +335,26 @@ void Tcp_Server::recvmsg(QString str)
 //服务器清除“死客户端”函数，用于清除异常断开or正常断开的客户端占用的坑位
 void Tcp_Server::slot_disconnect(int location)
 {
-    QString a = "error!!";
-    //qDebug()<<a;
+
+
+    for(int i = 1;i <= DataBase->getNum(); i++)
+    {
+        //通过主键找username，再通过username找state，如果state=location，则state=0
+        QString name = DataBase->getUsernameByUno(i);
+
+        if(name != "unknow")
+        {
+            if(DataBase->selectState(name) == location)
+            {
+                qDebug()<<"要删除啦！！！！！！";
+                DataBase->changeState(name,0);
+            }
+        }
+
+    }
+
     map1.remove(location);
 
-    //this->Clients[location] = nullptr;
-    //this->num[location] = 0;
     this->connect_sum--;
     this->client_menu_update();
     this->server_menu_update();
@@ -213,29 +364,53 @@ void Tcp_Server::slot_disconnect(int location)
 //刷新更新目前在线的客户端数目
 void Tcp_Server::client_menu_update()
 {
-    foreach (Client user,map1.values())
-    {
-        slot_sendmsg("在线用户location:"+QString::number(user.location,10),user.Socket);
-        slot_sendmsg("ip_address:"+user.Socket->peerAddress().toString(),user.Socket);
+    //foreach (Client user,map1.values())
+    //{
 
-    }
-    /*
-    for(int j=1;j<=9;j++)
-    {
-        if(num[j]!=0)
+        for(int i=1;i <= DataBase->getNum(); i++)
         {
-            for(int i=1;i<=9;i++)
+
+            QString name = DataBase->getUsernameByUno(i);
+            qDebug()<<"有在更新好友列表";
+            qDebug()<<"好友的名字是"<<name;
+            //说明这个name用户在线
+            if(DataBase->selectState(name) != 0)
             {
-                if(num[i]!=0)
+                qDebug()<<"第一层循环";
+                for(int j=1;j<=DataBase->getNum();j++)
                 {
-                    slot_sendmsg("在线用户location:"+QString::number(Clients[i]->location,10),Clients[j]->Socket);
-                    slot_sendmsg("ip_address:"+Clients[i]->Socket->peerAddress().toString(),Clients[j]->Socket);
+                    qDebug()<<"第二层循环";
+
+                    if(i!=j)
+                    {
+                        qDebug()<<"第一层条件";
+                        QString friend_name = DataBase->getUsernameByUno(j);
+                        if(DataBase->selectFriend(name,friend_name))
+                        {
+                            qDebug()<<"第二层条件";
+                            if( DataBase->selectState(friend_name) != 0)
+                            {
+                                slot_sendmsg("online_name:"+friend_name,0,DataBase->selectState(name));
+                            }
+                            else
+                            {
+                                slot_sendmsg("offline_name:"+friend_name,0,DataBase->selectState(name));
+                            }
+
+
+                        }
+                    }
+
+
                 }
 
             }
         }
-    }
-    */
+
+
+
+    //}
+
 
 }
 
@@ -246,19 +421,32 @@ void Tcp_Server::server_menu_update()
     if(connect_sum!=0)
     {
         ui->textBrowser->append("在线ip列表:");
+
+
         foreach(Client user,map1.values())
         {
             ui->textBrowser->append("#"+user.Socket->peerAddress().toString());
-        }
-        /*
-        for(int i=1;i<=9;i++)
-        {
-            if(num[i]!=0)
+            if(DataBase->getNum()!=0)
             {
-                ui->textBrowser->append("#"+Clients[i]->Socket->peerAddress().toString());
+                for(int i=1;i<=DataBase->getNum();i++)
+                {
+                    qDebug()<<i;
+                    QString name = DataBase->getUsernameByUno(i);
+                    if(DataBase->selectState(name)!=0)
+                    {
+                        ui->textBrowser->append("在线用户name:"+name+"用户客户端:"+QString::number(DataBase->selectState(name),10));
+
+                    }
+                    else
+                    {
+                        ui->textBrowser->append("不在线用户name:"+name);
+                    }
+                }
             }
+
         }
-        */
+
+
     }
 
 
@@ -275,19 +463,7 @@ void Tcp_Server::update_Socket()
             slot_disconnect(user.location);
         }
     }
-    /*
-    for(int i=1;i<=9;i++)
-    {
-        if(num[i]!=0)
-        {
-            bool flag = WakeHand(Clients[i]->Socket);
-            if(!flag)
-            {
-                slot_disconnect(i);
-            }
-        }
-    }
-    */
+
 }
 
 //服务器挥手函数，用以给客户端发送消息检测此客户端是否和服务器正常通信

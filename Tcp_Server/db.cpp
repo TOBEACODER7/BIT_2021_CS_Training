@@ -10,7 +10,6 @@
 #include "db.h"
 
 
-
 db::db()
 {
    qDebug()<<"数据库对象建立!";
@@ -21,186 +20,16 @@ db::~db()
    qDebug()<<"数据库对象释放!";
 }
 
-QString db::getUsernameByUno(int uno)
-{
-    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
-    db.setPort(3306);
-    db.setUserName("root");
-    db.setPassword("123456");
-    if(!db.open())
-    {
-         qDebug()<<"数据库在函数getUsernameByUno打开失败!原因是:"<<db.lastError().text();
-    }
 
-    QString sql=QString("SELECT username FROM login_info where uno=%1;").arg(uno);
-    QSqlQuery query(db);
-    if(!query.exec(sql)){
-        qDebug()<<"通过uno查询username失败！原因是:"<< query.lastError().text();
-        db.close();
-        return "unknown";
-    }
-    if(query.next()){
-        QString username=query.value(0).toString();
-        qDebug()<<uno<<"对应的username是:"<<username;
-        db.close();
-        return username;
-    }
-    db.close();
-    return "unknown";
-}
-int db::getUnoByUsername(QString username)
-{
-    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
-    db.setPort(3306);
-    db.setUserName("root");
-    db.setPassword("123456");
-    if(!db.open())
-    {
-         qDebug()<<"数据库在函数getUnoByUsername打开失败!原因是:"<<db.lastError().text();
-    }
-
-    QString sql=QString("SELECT uno FROM login_info where username='%1';").arg(username);
-    QSqlQuery query(db);
-    if(!query.exec(sql)){
-        qDebug()<<"通过username查询uno失败！原因是:"<< query.lastError().text();
-        db.close();
-        return -1;
-    }
-    if(query.next()){
-        int uno=query.value(0).toInt();
-        qDebug()<<username<<"对应的uno是:"<<uno;
-        db.close();
-        return uno;
-    }
-    db.close();
-    return -1;
-}
-QString db::getPasswordByUno(int uno)
-{
-    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
-    db.setPort(3306);
-    db.setUserName("root");
-    db.setPassword("123456");
-    if(!db.open())
-    {
-         qDebug()<<"数据库在函数getPasswordByUno打开失败!原因是:"<<db.lastError().text();
-    }
-
-    QString sql=QString("SELECT password FROM login_info where uno=%1;").arg(uno);
-    QSqlQuery query(db);
-    if(!query.exec(sql)){
-        qDebug()<<"通过uno查询password失败！原因是:"<< query.lastError().text();
-        db.close();
-        return "unknown";
-    }
-    if(query.next()){
-        QString password=query.value(0).toString();
-        qDebug()<<uno<<"对应的password是:"<<password;
-        db.close();
-        return password;
-    }
-    db.close();
-    return "unknown";
-}
-QString db::getNameByUno(int uno){
-    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
-    db.setPort(3306);
-    db.setUserName("root");
-    db.setPassword("123456");
-    if(!db.open())
-    {
-         qDebug()<<"数据库在函数getNameByUno打开失败!原因是:"<<db.lastError().text();
-    }
-
-    QString sql=QString("SELECT name FROM user_info where uno=%1;").arg(uno);
-    QSqlQuery query(db);
-    if(!query.exec(sql)){
-        qDebug()<<"通过uno查询name失败！原因是:"<< query.lastError().text();
-        db.close();
-        return "unknown";
-    }
-    if(query.next()){
-        QString name=query.value(0).toString();
-        qDebug()<<uno<<"对应的name是:"<<name;
-        db.close();
-        return name;
-    }
-    db.close();
-    return "unknown";
-}
-QString db::getPhoneByUno(int uno){
-    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
-    db.setPort(3306);
-    db.setUserName("root");
-    db.setPassword("123456");
-    if(!db.open())
-    {
-         qDebug()<<"数据库在函数getPhoneByUno打开失败!原因是:"<<db.lastError().text();
-    }
-
-    QString sql=QString("SELECT phone FROM user_info where uno=%1;").arg(uno);
-    QSqlQuery query(db);
-    if(!query.exec(sql)){
-        qDebug()<<"通过uno查询phone失败！原因是:"<< query.lastError().text();
-        db.close();
-        return "unknown";
-    }
-    if(query.next()){
-        QString phone=query.value(0).toString();
-        qDebug()<<uno<<"对应的phone是:"<<phone;
-        db.close();
-        return phone;
-    }
-    db.close();
-    return "unknown";
-}
-QString db::getEmailByUno(int uno){
-    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
-    db.setPort(3306);
-    db.setUserName("root");
-    db.setPassword("123456");
-    if(!db.open())
-    {
-         qDebug()<<"数据库在函数getEmailByUno打开失败!原因是:"<<db.lastError().text();
-    }
-
-    QString sql=QString("SELECT email FROM user_info where uno=%1;").arg(uno);
-    QSqlQuery query(db);
-    if(!query.exec(sql)){
-        qDebug()<<"通过uno查询email失败！原因是:"<< query.lastError().text();
-        db.close();
-        return "unknown";
-    }
-    if(query.next()){
-        QString email=query.value(0).toString();
-        qDebug()<<uno<<"对应的email是:"<<email;
-        db.close();
-        return email;
-    }
-    db.close();
-    return "unknown";
-}
 
 int db::getNum(){
 
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("123456");
+    db.setPassword("admin");
     if(!db.open())
     {
          qDebug()<<"数据库在函数getNum打开失败!原因是:"<<db.lastError().text();
@@ -219,14 +48,15 @@ int db::getNum(){
     return num;
 }
 
-bool db::login(QString username)
+//注册完帐号后生成该用户好友列表
+bool db::Friend_table(QString username)
 {
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("123456");
+    db.setPassword("admin");
     if(!db.open())
     {
          qDebug()<<"数据库在函数login打开失败!原因是:"<<db.lastError().text();
@@ -249,10 +79,10 @@ bool db::login(QString username)
 bool db::addFriend(QString user,QString friends){
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("123456");
+    db.setPassword("admin");
     if(!db.open())
     {
          qDebug()<<"数据库在函数addFriend打开失败!原因是:"<<db.lastError().text();
@@ -275,10 +105,10 @@ bool db::selectFriend(QString user, QString friends)
 {
         QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
         db.setHostName("127.0.0.1");
-        db.setDatabaseName("qtsql");
+        db.setDatabaseName("user_info");
         db.setPort(3306);
         db.setUserName("root");
-        db.setPassword("123456");
+        db.setPassword("admin");
         //打开数据库
         if(!db.open())
         {
@@ -309,10 +139,10 @@ bool db::selectFriend(QString user, QString friends)
 bool db::insertSql(user_info &user){
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("123456");
+    db.setPassword("admin");
     if(!db.open())
     {
          qDebug()<<"数据库在函数 insertSql 打开失败!原因是:"<<db.lastError().text();
@@ -328,7 +158,7 @@ bool db::insertSql(user_info &user){
             .arg(user.getUno())
             .arg(user.getUsername())
             .arg(user.getPassword());
-    QString sql3=QString("INSERT INTO online_info VALUES('%1','%2',0);")
+    QString sql3=QString("INSERT INTO state_info VALUES('%1','%2',0);")
             .arg(user.getUno())
             .arg(user.getUsername());
 
@@ -344,7 +174,7 @@ bool db::insertSql(user_info &user){
         return false;
     }
     if(!query.exec(sql3)){
-        qDebug()<<"online_info插入失败!原因是:"<< query.lastError().text();
+        qDebug()<<"state_info插入失败!原因是:"<< query.lastError().text();
         db.close();
         return false;
     }
@@ -352,6 +182,7 @@ bool db::insertSql(user_info &user){
     db.close();
     return true;
 }
+
 
 bool db::selectSql(QString username)
 {
@@ -427,20 +258,19 @@ bool db::loginJudge(QString username, QString password)
     db.close();
     return false;
 }
-
 bool db::changeState(QString username,int state){
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("123456");
+    db.setPassword("admin");
     //打开数据库
     if(!db.open())
     {
          qDebug()<<"数据库在函数changeState中打开失败!原因是:"<<db.lastError().text();
     }
-    QString sql = QString("UPDATE online_info SET state=%1 WHERE username='%2';").arg(state).arg(username);
+    QString sql = QString("UPDATE state_info SET state=%1 WHERE username='%2';").arg(state).arg(username);
     QSqlQuery query(db);
     query.prepare(sql);
     if(!query.exec()){
@@ -451,21 +281,21 @@ bool db::changeState(QString username,int state){
     db.close();
     return true;
 }
-int db::selectState(int uno)
+int db::selectState(QString username)
 {
     int state;
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("qtsql");
+    db.setDatabaseName("user_info");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("123456");
+    db.setPassword("admin");
     //打开数据库
     if(!db.open())
     {
          qDebug()<<"数据库在函数selectState中打开失败!原因是:"<<db.lastError().text();
     }
-    QString sql = QString("select state from online_info where uno=%1;").arg(uno);
+    QString sql = QString("select state from state_info where username='%1';").arg(username);
     QSqlQuery query(db);
     query.prepare(sql);
     if(!query.exec()){
@@ -477,4 +307,30 @@ int db::selectState(int uno)
     state=query.value(0).toInt();
     db.close();
     return state;
+}
+QString db::getUsernameByUno(int uno)
+{
+    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("127.0.0.1");
+    db.setDatabaseName("user_info");
+    db.setPort(3306);
+    db.setUserName("root");
+    db.setPassword("admin");
+    if(!db.open())
+    {
+         qDebug()<<"数据库在函数getUsernameByUno打开失败!原因是:"<<db.lastError().text();
+    }
+
+    QString sql=QString("SELECT username FROM login_info where uno=%1;").arg(uno);
+    QSqlQuery query(db);
+    if(!query.exec(sql)){
+        qDebug()<<"通过uno查询username失败！原因是:"<< query.lastError().text();
+        db.close();
+        return "unkown";
+    }
+    query.next();
+    QString username=query.value(0).toString();
+    qDebug()<<uno<<"对应的username是:"<<username;
+    db.close();
+    return username;
 }

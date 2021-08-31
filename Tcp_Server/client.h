@@ -17,6 +17,7 @@ public:
     Client(Tcp_Server *p,QTcpSocket *Socket,int num);
     ~Client();
     Client& operator=(const Client &x);
+    //bool operator==(Client a2);
 public slots:
     void slot_Read();
 };
