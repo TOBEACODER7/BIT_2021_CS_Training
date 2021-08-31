@@ -31,6 +31,32 @@ public:
     int  selectState(QString);
     //通过uno获取username
    QString getUsernameByUno(int);
+    //通过username获取uno
+    int getUnoByUsername(QString);
+    //通过uno获取password
+    QString getPasswordByUno(int);
+    //通过uno获取name
+    QString getNameByUno(int);
+    //通过uno获取phone
+    QString getPhoneByUno(int);
+    //通过uno获取email
+    QString getEmailByUno(int);
+    //通过uno,username改变username
+    bool changeUsername(int,QString);
+    //通过uno改变password
+    bool changePassword(int,QString);
+    //通过uno改变name
+    bool changeName(int,QString);
+    //通过uno改变phone
+    bool changePhone(int,QString);
+    //通过uno改变email
+    bool changeEmail(int,QString);
+    //注销账户
+    bool deleteUSer(int);
+    //状态清零
+    bool clearState();
+    //查看uno是否已经被使用
+    bool usedUno(int);
 };
 
 #endif // DB_H
