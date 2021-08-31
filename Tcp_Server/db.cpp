@@ -711,3 +711,27 @@ bool db::usedUno(int uno){
     db.close();
     return false;
 }
+bool db::deleteFriend(QString user, QString friends){
+    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("127.0.0.1");
+    db.setDatabaseName("qtsql");
+    db.setPort(3306);
+    db.setUserName("root");
+    db.setPassword("123456");
+    if(!db.open())
+    {
+         qDebug()<<"数据库在函数deleteUSer打开失败!原因是:"<<db.lastError().text();
+         db.close();
+         return false;
+    }
+    QString sql=QString("delete FROM %1 where friends='%2'").arg(user).arg(friends);
+    QSqlQuery query(db);
+    if(!query.exec(sql)){
+        qDebug()<<"删除好友失败！原因是:"<< query.lastError().text();
+        db.close();
+        return false;
+    }
+    qDebug()<<user<<"的"<<"好友："<<friends<<"已经删除！";
+    db.close();
+    return true;
+}
