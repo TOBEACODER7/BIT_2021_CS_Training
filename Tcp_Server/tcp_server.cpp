@@ -110,6 +110,7 @@ void Tcp_Server::recvmsg(QString str,int recv_id)
 {
 
     //格式解析
+    //qDebug()<<"接收函数";
     if(str[0] == 'L')
     {
         int idx2 = str.indexOf("/password");
@@ -128,7 +129,8 @@ void Tcp_Server::recvmsg(QString str,int recv_id)
                 {
                     //登录成功
                     msg = "L#1";
-                    DataBase->changeState(user_name,this->location);
+                    DataBase->changeState(user_name,recv_id);
+                    //DataBase->changeState(user_name,this->location);
 
                 }
                 else
@@ -225,35 +227,44 @@ void Tcp_Server::recvmsg(QString str,int recv_id)
     }
     else if(str[0] == 'M')
     {
+        qDebug()<<"消息解析";
         int idx2 = str.indexOf("/");
         int idx3 = str.indexOf("|");
         int idx4 = str.indexOf("From");
         QString msg;
         QString send_name = str.mid(12,idx2-12);
-        QString recv_name = str.mid(idx2+10,idx3-idx2-10);
-        int send_location = DataBase->selectState(msg);
-        int recv_location = DataBase->selectState(msg);
+        QString recv_name = str.mid(idx2+11,idx3-idx2-11);
+        int send_location = DataBase->selectState(send_name);
+        int recv_location = DataBase->selectState(recv_name);
+        qDebug()<<"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+        qDebug()<<"send_name"<<send_name;
+        qDebug()<<"recv_name"<<recv_name;
+        qDebug()<<"send_loaction"<<send_location;
+        qDebug()<<"recv_location"<<recv_location;
+        qDebug()<<"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+
         if(DataBase->selectFriend(send_name,recv_name))
         {
-            //两个人是好友，可以发送信息
+            qDebug()<<"两个人是好友，可以发送信息";
 
 
             if(recv_location == 0)
             {
-                //该用户离线
+                qDebug()<<"该用户离线";
                 msg = "M#1";
                 slot_sendmsg(msg,0,send_location);
             }
             else
             {
-                msg = "M#0"+send_name+":"+str.mid(idx3+9,idx4-idx3-9);
+                qDebug()<<"可以发消息";
+                msg = "M#0"+send_name+":"+str.mid(idx3+8,idx4-idx3-8);
                 slot_sendmsg(msg,send_location,recv_location);
             }
 
         }
         else
         {
-            //该用户不是你的好友
+            qDebug()<<"该用户不是你的好友";
             msg = "M#2";
             slot_sendmsg(msg,0,send_location);
         }
@@ -308,6 +319,14 @@ void Tcp_Server::recvmsg(QString str,int recv_id)
                         {
                             //加好友成功
                             msg = "F#1";
+                            //服务器列表更新
+                            this->server_menu_update();
+
+
+                            //客户端列表更新
+                            this->client_menu_update();
+
+
 
                         }
                         else
@@ -328,6 +347,18 @@ void Tcp_Server::recvmsg(QString str,int recv_id)
 
     }
 
+    else if(str[0] == 'G')
+    {
+        int idx1 = str.indexOf("From");
+        QString user_name = str.mid(10,idx1-10);
+        //服务器列表更新
+        this->server_menu_update();
+
+
+        //客户端列表更新
+        this->client_menu_update();
+
+    }
     //qDebug()<<str[0];
     ui->textBrowser->append(str);
 }
@@ -376,6 +407,8 @@ void Tcp_Server::client_menu_update()
             //说明这个name用户在线
             if(DataBase->selectState(name) != 0)
             {
+                QString online_name = "online_name:";
+                QString offline_name = "offline_name:";
                 qDebug()<<"第一层循环";
                 for(int j=1;j<=DataBase->getNum();j++)
                 {
@@ -390,11 +423,14 @@ void Tcp_Server::client_menu_update()
                             qDebug()<<"第二层条件";
                             if( DataBase->selectState(friend_name) != 0)
                             {
-                                slot_sendmsg("online_name:"+friend_name,0,DataBase->selectState(name));
+                                online_name+="@"+friend_name;
+                                //QString online_name = "online_name:"
+                                //slot_sendmsg("online_name:"+friend_name,0,DataBase->selectState(name));
                             }
                             else
                             {
-                                slot_sendmsg("offline_name:"+friend_name,0,DataBase->selectState(name));
+                                offline_name+="@"+friend_name;
+                                //slot_sendmsg("offline_name:"+friend_name,0,DataBase->selectState(name));
                             }
 
 
@@ -404,6 +440,8 @@ void Tcp_Server::client_menu_update()
 
                 }
 
+                slot_sendmsg("%"+online_name+"%",0,DataBase->selectState(name));
+                slot_sendmsg("%"+offline_name+"%",0,DataBase->selectState(name));
             }
         }
 
