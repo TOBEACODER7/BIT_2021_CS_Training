@@ -1,5 +1,13 @@
 # BIT_2021_CS_Training
-北京理工大学-2021-计算机科学与技术专业小学期-计算机专业实习
+Project：Chat_app
+Can：
+- message chat
+- files send
+- online list
+Can`t:
+- didn`t finish ip address action; use static ip in code
 
-# ！！！查看声明
-该部分代码仅用于2021年小学期学习和大作业使用
+# WARNNING
+DO NOT COPY!
+DO NOT USE TO FINISH YOUR WORK
+You can use some parts of this project but please copy directly!
