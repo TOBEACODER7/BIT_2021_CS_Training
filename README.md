@@ -4,6 +4,7 @@ Can：
 - message chat
 - files send
 - online list
+
 Can`t:
 - didn`t finish ip address action; use static ip in code
 
