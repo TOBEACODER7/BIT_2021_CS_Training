@@ -8,7 +8,7 @@ Can：
 Can`t:
 - didn`t finish ip address action; use static ip in code
   
-# WARNNING
+# WARNING
 DO NOT COPY!  
 DO NOT USE TO FINISH YOUR WORK!  
 You can use some parts of this project but please copy directly!
