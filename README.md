@@ -10,5 +10,5 @@ Can`t:
   
 # WARNNING
 DO NOT COPY!  
-DO NOT USE TO FINISH YOUR WORK. 
+DO NOT USE TO FINISH YOUR WORK!  
 You can use some parts of this project but please copy directly!
