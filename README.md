@@ -11,4 +11,4 @@ Can`t:
 # WARNING
 DO NOT COPY!  
 DO NOT USE TO FINISH YOUR WORK!  
-You can use some parts of this project but please copy directly!
+You can use some parts of this project but cannot copy directly!
